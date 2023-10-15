@@ -78,7 +78,7 @@ func HandleOp(bo *bo.HandleOpBO) (string, error) {
 	userOps := []entrypoint.UserOperation{
 		convertBOToUserOperation(bo.UserOp),
 	}
-	out, err := ABI.Pack("handleOps", userOps, bo.UserOp.Sender)
+	out, err := ABI.Pack("handleOps", userOps, bo.Beneficiary)
 	if err != nil {
 		log.Fatal(err)
 	}
