@@ -1,0 +1,234 @@
+basePath: /api/v1/
+definitions:
+  controller.ResponseData:
+    properties:
+      code:
+        type: integer
+      data:
+        description: omitempty当data为空时,不展示这个字段
+      message:
+        type: string
+    type: object
+  models.LoginForm:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.RegisterForm:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        description: 邮箱
+        type: string
+      gender:
+        description: 性别 0:未知 1:男 2:女
+        enum:
+        - 0
+        - 1
+        - 2
+        type: integer
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    required:
+    - confirm_password
+    - email
+    - password
+    - username
+    type: object
+  vo.HandleOpVO:
+    properties:
+      beneficiary_addr:
+        type: string
+      user_op:
+        $ref: '#/definitions/vo.UserOperationVO'
+    type: object
+  vo.LimitOrderVO:
+    properties:
+      amount_in:
+        type: string
+      amount_out:
+        type: string
+      amount_out_minimum:
+        type: string
+      fee:
+        type: integer
+      token_in:
+        type: string
+      token_out:
+        type: string
+      user:
+        type: string
+    required:
+    - amount_in
+    - amount_out
+    - amount_out_minimum
+    - fee
+    - token_in
+    - token_out
+    - user
+    type: object
+  vo.UserOperationVO:
+    properties:
+      call_data:
+        type: string
+      call_gas_limit:
+        type: string
+      init_code:
+        type: string
+      max_fee_per_gas:
+        type: string
+      max_priority_fee_per_gas:
+        type: string
+      nonce:
+        type: string
+      paymaster_and_data:
+        type: string
+      pre_verification_gas:
+        type: string
+      sender:
+        type: string
+      signature:
+        type: string
+      verification_gas_limit:
+        type: string
+    type: object
+host: 127.0.0.1:8081
+info:
+  contact: {}
+paths:
+  /handle_op:
+    post:
+      description: handle op operation
+      parameters:
+      - description: 快速交易参数
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/vo.HandleOpVO'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ResponseData'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - swapbotAA业务接口
+  /limit_order:
+    post:
+      description: limit order operation
+      parameters:
+      - description: 限价单参数
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/vo.LimitOrderVO'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ResponseData'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - swapbotAA业务接口
+  /login:
+    post:
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 登录请求参数
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ResponseData'
+      security:
+      - ApiKeyAuth: []
+      summary: 登录业务
+      tags:
+      - 用户业务接口
+  /refresh_token:
+    get:
+      description: 刷新accessToken
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 可以为空
+        in: query
+        name: community_id
+        type: integer
+      - description: 排序依据
+        example: score
+        in: query
+        name: order
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 关键字搜索
+        in: query
+        name: search
+        type: string
+      - description: 每页数量
+        in: query
+        name: size
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ResponseData'
+      security:
+      - ApiKeyAuth: []
+      summary: 刷新accessToken
+      tags:
+      - 用户业务接口
+  /signup:
+    post:
+      description: 注册业务
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 注册请求参数
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ResponseData'
+      security:
+      - ApiKeyAuth: []
+      summary: 注册业务
+      tags:
+      - 用户业务接口
+swagger: "2.0"
